@@ -497,7 +497,7 @@ struct control_data_t
   irs::bit_data_t alarm_17A_th_base;
   irs::bit_data_t alarm_17A_th_aux;
   irs::bit_data_t alarm_upper_level;
-
+  
   irs::bit_data_t on;
 
   irs::conn_data_t<irs_u8> unlock;
@@ -518,7 +518,7 @@ struct control_data_t
   irs::bit_data_t watchdog_reset_cause;
   irs::bit_data_t watchdog_test;
   irs::bit_data_t izm_th_spi_enable;
-
+  
   irs::conn_data_t<irs_u32> connect_counter;
 
   control_data_t(irs::mxdata_t *ap_data = IRS_NULL, irs_uarc a_index = 0,
@@ -590,7 +590,7 @@ struct control_data_t
     watchdog_reset_cause.connect(ap_data, index, 4);
     watchdog_test.connect(ap_data, index, 5);
     izm_th_spi_enable.connect(ap_data, index, 6);
-
+    
     index++;
     index++;
 
