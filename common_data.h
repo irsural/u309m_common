@@ -520,6 +520,7 @@ struct control_data_t
   irs::bit_data_t izm_th_spi_enable;
   
   irs::conn_data_t<irs_u32> connect_counter;
+  irs::conn_data_t<double> time;
 
   control_data_t(irs::mxdata_t *ap_data = IRS_NULL, irs_uarc a_index = 0,
     irs_uarc* ap_size = IRS_NULL)
@@ -595,6 +596,7 @@ struct control_data_t
     index++;
 
     index = connect_counter.connect(ap_data, index);
+    index = time.connect(ap_data, index);
 
     return index;
   }
@@ -615,9 +617,9 @@ struct eth_data_t {
   supply_eth_data_t supply_2V;    //  114 bytes
   supply_eth_data_t supply_1A;    //  114 bytes
   supply_eth_data_t supply_17A;   //  114 bytes
-  control_data_t control;         //  12 bytes
+  control_data_t control;         //  20 bytes
   //---------------------------------------------
-  //                          Итого:  660 байт
+  //                          Итого:  668 байт
 
   eth_data_t(irs::mxdata_t *ap_data = IRS_NULL, irs_uarc a_index = 0,
     irs_uarc* ap_size = IRS_NULL)
