@@ -520,7 +520,7 @@ struct control_data_t
   irs::bit_data_t izm_th_spi_enable;
   
   irs::conn_data_t<irs_u32> connect_counter;
-  irs::conn_data_t<long> time;
+  irs::conn_data_t<irs_u32> time;
 
   control_data_t(irs::mxdata_t *ap_data = IRS_NULL, irs_uarc a_index = 0,
     irs_uarc* ap_size = IRS_NULL)
