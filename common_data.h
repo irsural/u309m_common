@@ -7,6 +7,112 @@
 
 #include <irsfinal.h>
 
+// Определения для сетевого массива
+
+// Команды управления реле
+// В младших 4-х битах номер катушки (нормального элемента), начиная с 1
+// 0 - эталонная катушка (нормальный элемент)
+// Включение прямого управления реле
+#define RELAY_COM_DIRECT_CTRL    0x00
+// Остановка измерений
+#define RELAY_COM_STOP           0x10
+// Измерение сопротивления
+#define RELAY_COM_RES            0x20
+// Измерение сопротивления с добавочным резистором 5 Ом
+#define RELAY_COM_RES_RADD       0x30
+// Прямое измерение напряжение на нормальном элементе
+#define RELAY_COM_DIRECT_CELL    0x40
+// Измерение напряжение на нормальном элементе методом сравнения
+#define RELAY_COM_COMPARE_CELL   0x50
+// Измерение сопротивления магазина
+#define RELAY_COM_RES_BOX        0x60
+// Прямое измерение напряжение на нормальном элементе
+// с добавочным резистором 100 МОм
+#define RELAY_COM_DIRECT_CELL_RADD 0x70
+
+// Прямое управление реле
+// Первые 4 бита - номер байта, вторые 4 бита - номер бита
+// Включение реле S1I
+#define RELAY_COM_RELAY_S1I       0x10
+// Включение реле S2I
+#define RELAY_COM_RELAY_S2I       0x11
+// Включение реле S3I
+#define RELAY_COM_RELAY_S3I       0x12
+// Включение реле S4I
+#define RELAY_COM_RELAY_S4I       0x13
+// Включение реле S5I
+#define RELAY_COM_RELAY_S5I       0x14
+// Включение реле S6I
+#define RELAY_COM_RELAY_S6I       0x15
+// Включение реле S7I
+#define RELAY_COM_RELAY_S7I       0x16
+// Включение реле S8I
+#define RELAY_COM_RELAY_S8I       0x17
+
+// Включение реле S1U
+#define RELAY_COM_RELAY_S1U       0x20
+// Включение реле S2U
+#define RELAY_COM_RELAY_S2U       0x21
+// Включение реле S3U
+#define RELAY_COM_RELAY_S3U       0x22
+// Включение реле S4U
+#define RELAY_COM_RELAY_S4U       0x23
+// Включение реле S5U
+#define RELAY_COM_RELAY_S5U       0x24
+// Включение реле S6U
+#define RELAY_COM_RELAY_S6U       0x25
+// Включение реле S7U
+#define RELAY_COM_RELAY_S7U       0x26
+// Включение реле S8U
+#define RELAY_COM_RELAY_S8U       0x27
+
+// Включение реле SI
+#define RELAY_COM_RELAY_SI        0x30
+// Включение реле S0U
+#define RELAY_COM_RELAY_S0U       0x31
+// Включение реле SEU
+#define RELAY_COM_RELAY_SEU       0x32
+// Включение реле SU
+#define RELAY_COM_RELAY_SU        0x33
+// Включение реле S4X
+#define RELAY_COM_RELAY_S4X       0x34
+// Включение реле SR
+#define RELAY_COM_RELAY_SR        0x35
+// Включение реле SRC
+#define RELAY_COM_RELAY_SRC       0x36
+
+// Биты статуса
+// Команда выполнена
+#define RELAY_ST_OK               0x02
+
+// Выделение байта из переменной
+#define DATA_BYTE(_VAR_, _BIT_) (*(((irs_u8 *)&(_VAR_)) + ((_BIT_&0xF0) >> 4)))
+// Выставление бита
+#define DATA_BIT(_BIT_) (1 << (_BIT_&0x0F))
+// Выставление инвертированного бита
+#define DATA_IBIT(_BIT_) (0xFF^DATA_BIT(_BIT_))
+// Проверка бита
+#define DATA_TEST_BIT(_VAR_, _BIT_)\
+  (DATA_BYTE(_VAR_, _BIT_)&DATA_BIT(_BIT_))
+// Установка бита
+#define DATA_SET_BIT(_VAR_, _BIT_, _VAL_)\
+  ((_VAL_)?(DATA_BYTE(_VAR_, _BIT_) |= static_cast<irs_u8>(DATA_BIT(_BIT_))):\
+    (DATA_BYTE(_VAR_, _BIT_) &= static_cast<irs_u8>(DATA_IBIT(_BIT_))))
+
+// Структура сетевого массива
+typedef struct _data_t {
+  // Команда
+  irs_i32 command;
+  // Статус
+  irs_i32 status;
+  // Отладочная переменная
+  irs_i32 debug;
+} data_t;
+
+// Размер сетевого массива в переменных
+#define SIZE_OF_DATA (sizeof(data_t)/sizeof(irs_i32))
+
+
 namespace u309m {
 
 struct rele_ext_eth_data_t {
@@ -391,7 +497,7 @@ struct control_data_t
   irs::bit_data_t alarm_17A_th_base;
   irs::bit_data_t alarm_17A_th_aux;
   irs::bit_data_t alarm_upper_level;
-
+  
   irs::bit_data_t on;
 
   irs::conn_data_t<irs_u8> unlock;
@@ -412,10 +518,9 @@ struct control_data_t
   irs::bit_data_t watchdog_reset_cause;
   irs::bit_data_t watchdog_test;
   irs::bit_data_t izm_th_spi_enable;
-
+  
   irs::conn_data_t<irs_u32> connect_counter;
   irs::conn_data_t<irs_u32> time;
-  irs::conn_data_t<irs_u32> work_counter;
 
   control_data_t(irs::mxdata_t *ap_data = IRS_NULL, irs_uarc a_index = 0,
     irs_uarc* ap_size = IRS_NULL)
@@ -486,13 +591,12 @@ struct control_data_t
     watchdog_reset_cause.connect(ap_data, index, 4);
     watchdog_test.connect(ap_data, index, 5);
     izm_th_spi_enable.connect(ap_data, index, 6);
-
+    
     index++;
     index++;
 
     index = connect_counter.connect(ap_data, index);
     index = time.connect(ap_data, index);
-    index = work_counter.connect(ap_data, index);
 
     return index;
   }
@@ -513,7 +617,7 @@ struct eth_data_t {
   supply_eth_data_t supply_2V;    //  114 bytes
   supply_eth_data_t supply_1A;    //  114 bytes
   supply_eth_data_t supply_17A;   //  114 bytes
-  control_data_t control;         //  20 bytes
+  control_data_t control;         //  18 bytes
   //---------------------------------------------
   //                          Итого:  668 байт
 
