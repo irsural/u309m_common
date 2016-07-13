@@ -502,22 +502,23 @@ struct control_data_t
 
   irs::conn_data_t<irs_u8> unlock;
 
-  irs::bit_data_t ready_200V_prev;
-  irs::bit_data_t ready_200V_final;
-  irs::bit_data_t ready_20V_prev;
-  irs::bit_data_t ready_20V_final;
-  irs::bit_data_t ready_2V_prev;
-  irs::bit_data_t ready_2V_final;
-  irs::bit_data_t ready_1A_prev;
-  irs::bit_data_t ready_1A_final;
-  irs::bit_data_t ready_17A_prev;
-  irs::bit_data_t ready_17A_final;
+  irs::bit_data_t thermo_200V_off;
+  irs::bit_data_t meas_200V_off;
+  irs::bit_data_t thermo_20V_off;
+  irs::bit_data_t meas_20V_off;
+  irs::bit_data_t thermo_2V_off;
+  irs::bit_data_t meas_2V_off;
+  irs::bit_data_t thermo_1A_off;
+  irs::bit_data_t meas_1A_off;
+  irs::bit_data_t thermo_17A_off;
+  irs::bit_data_t meas_17A_off;
 
   irs::bit_data_t upper_level_check;
   irs::bit_data_t refresh_all_sources;
   irs::bit_data_t watchdog_reset_cause;
   irs::bit_data_t watchdog_test;
   irs::bit_data_t izm_th_spi_enable;
+  irs::bit_data_t spi_enable;
 
   irs::conn_data_t<irs_u32> connect_counter;
   irs::conn_data_t<irs_u32> time;
@@ -573,25 +574,26 @@ struct control_data_t
 
     index = unlock.connect(ap_data, index);
 
-    ready_200V_prev.connect(ap_data, index, 0);
-    ready_200V_final.connect(ap_data, index, 1);
-    ready_20V_prev.connect(ap_data, index, 2);
-    ready_20V_final.connect(ap_data, index, 3);
-    ready_2V_prev.connect(ap_data, index, 4);
-    ready_2V_final.connect(ap_data, index, 5);
-    ready_1A_prev.connect(ap_data, index, 6);
-    ready_1A_final.connect(ap_data, index, 7);
+    thermo_200V_off.connect(ap_data, index, 0);
+    meas_200V_off.connect(ap_data, index, 1);
+    thermo_20V_off.connect(ap_data, index, 2);
+    meas_20V_off.connect(ap_data, index, 3);
+    thermo_2V_off.connect(ap_data, index, 4);
+    meas_2V_off.connect(ap_data, index, 5);
+    thermo_1A_off.connect(ap_data, index, 6);
+    meas_1A_off.connect(ap_data, index, 7);
 
     index++;
 
-    ready_17A_prev.connect(ap_data, index, 0);
-    ready_17A_final.connect(ap_data, index, 1);
+    thermo_17A_off.connect(ap_data, index, 0);
+    meas_17A_off.connect(ap_data, index, 1);
 
     upper_level_check.connect(ap_data, index, 2);
     refresh_all_sources.connect(ap_data, index, 3);
     watchdog_reset_cause.connect(ap_data, index, 4);
     watchdog_test.connect(ap_data, index, 5);
     izm_th_spi_enable.connect(ap_data, index, 6);
+    spi_enable.connect(ap_data, index, 6);
 
     index++;
     index++;
@@ -623,7 +625,19 @@ struct eth_data_t {
   //---------------------------------------------
   //                          Итого:  668 байт
 
-  eth_data_t(irs::mxdata_t *ap_data = IRS_NULL, irs_uarc a_index = 0,
+  struct supply_add_data_t
+{
+  irs::bit_data_t* p_thermo_off;
+  irs::bit_data_t* p_meas_off;
+  
+  supply_add_data_t():
+    p_thermo_off(IRS_NULL),
+    p_meas_off(IRS_NULL)
+  {
+  }
+};
+
+eth_data_t(irs::mxdata_t *ap_data = IRS_NULL, irs_uarc a_index = 0,
     irs_uarc* ap_size = IRS_NULL)
   {
     irs_uarc size = connect(ap_data, a_index);
