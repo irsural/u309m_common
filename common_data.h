@@ -606,6 +606,18 @@ struct control_data_t
   }
 }; // control_data_t
 
+struct supply_add_data_t
+{
+  irs::bit_data_t* p_thermo_off;
+  irs::bit_data_t* p_meas_off;
+  
+  supply_add_data_t():
+    p_thermo_off(IRS_NULL),
+    p_meas_off(IRS_NULL)
+  {
+  }
+};
+
 struct eth_data_t {
   irs::conn_data_t<irs_u8> ip_0;  //  1 byte
   irs::conn_data_t<irs_u8> ip_1;  //  1 byte
@@ -625,19 +637,7 @@ struct eth_data_t {
   //---------------------------------------------
   //                          Итого:  668 байт
 
-  struct supply_add_data_t
-{
-  irs::bit_data_t* p_thermo_off;
-  irs::bit_data_t* p_meas_off;
-  
-  supply_add_data_t():
-    p_thermo_off(IRS_NULL),
-    p_meas_off(IRS_NULL)
-  {
-  }
-};
-
-eth_data_t(irs::mxdata_t *ap_data = IRS_NULL, irs_uarc a_index = 0,
+  eth_data_t(irs::mxdata_t *ap_data = IRS_NULL, irs_uarc a_index = 0,
     irs_uarc* ap_size = IRS_NULL)
   {
     irs_uarc size = connect(ap_data, a_index);
