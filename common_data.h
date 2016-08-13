@@ -523,6 +523,10 @@ struct control_data_t
   irs::conn_data_t<irs_u32> connect_counter;
   irs::conn_data_t<irs_u32> time;
   irs::conn_data_t<irs_u32> work_counter;
+  
+  irs::conn_data_t<irs_u16> program_rev;
+  irs::conn_data_t<irs_u32> mxsrclib_rev;
+  irs::conn_data_t<irs_u16> common_rev;
 
   control_data_t(irs::mxdata_t *ap_data = IRS_NULL, irs_uarc a_index = 0,
     irs_uarc* ap_size = IRS_NULL)
@@ -593,7 +597,7 @@ struct control_data_t
     watchdog_reset_cause.connect(ap_data, index, 4);
     watchdog_test.connect(ap_data, index, 5);
     izm_th_spi_enable.connect(ap_data, index, 6);
-    spi_enable.connect(ap_data, index, 6);
+    spi_enable.connect(ap_data, index, 7);
 
     index++;
     index++;
@@ -601,6 +605,10 @@ struct control_data_t
     index = connect_counter.connect(ap_data, index);
     index = time.connect(ap_data, index);
     index = work_counter.connect(ap_data, index);
+    
+    index = program_rev.connect(ap_data, index);
+    index = mxsrclib_rev.connect(ap_data, index);
+    index = common_rev.connect(ap_data, index);
 
     return index;
   }
@@ -638,6 +646,7 @@ struct eth_data_t {
   control_data_t control;         //  20 bytes
   //---------------------------------------------
   //                          Итого:  668 байт
+  //                       Доступно:  814 байт
 
   eth_data_t(irs::mxdata_t *ap_data = IRS_NULL, irs_uarc a_index = 0,
     irs_uarc* ap_size = IRS_NULL)
