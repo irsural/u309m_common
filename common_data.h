@@ -619,6 +619,7 @@ struct supply_add_data_t
 };
 
 struct eth_data_t {
+  // Биты (14 байт)
   irs::conn_data_t<irs_u8> ip_0;  //  1 byte
   irs::conn_data_t<irs_u8> ip_1;  //  1 byte
   irs::conn_data_t<irs_u8> ip_2;  //  1 byte
@@ -626,6 +627,7 @@ struct eth_data_t {
   rele_ext_eth_data_t rele_ext;   //  2 bytes
   supply_comm_data_t supply_comm; //  4 bytes
   meas_comm_data_t meas_comm;     //  4 bytes
+  // Регистры
   meas_comm_th_data_t meas_comm_th;// 20 bytes
   arm_adc_data_t arm_adc;         //  44 bytes
   supply_eth_data_t supply_200V;  //  114 bytes
