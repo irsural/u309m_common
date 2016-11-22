@@ -520,6 +520,8 @@ struct control_data_t
   irs::bit_data_t izm_th_spi_enable;
   irs::bit_data_t spi_enable;
 
+  irs::bit_data_t ip_params_apply;
+  
   irs::conn_data_t<irs_u32> connect_counter;
   irs::conn_data_t<irs_u32> time;
   irs::conn_data_t<irs_u32> work_counter;
@@ -527,7 +529,17 @@ struct control_data_t
   irs::conn_data_t<irs_u16> program_rev;
   irs::conn_data_t<irs_u32> mxsrclib_rev;
   irs::conn_data_t<irs_u16> common_rev;
+  irs::conn_data_t<irs_u16> lwip_rev;
 
+  irs::conn_data_t<irs_u8> mask_0;
+  irs::conn_data_t<irs_u8> mask_1;
+  irs::conn_data_t<irs_u8> mask_2;
+  irs::conn_data_t<irs_u8> mask_3;
+  irs::conn_data_t<irs_u8> gateway_0;
+  irs::conn_data_t<irs_u8> gateway_1;
+  irs::conn_data_t<irs_u8> gateway_2;
+  irs::conn_data_t<irs_u8> gateway_3;
+  
   control_data_t(irs::mxdata_t *ap_data = IRS_NULL, irs_uarc a_index = 0,
     irs_uarc* ap_size = IRS_NULL)
   {
@@ -600,6 +612,9 @@ struct control_data_t
     spi_enable.connect(ap_data, index, 7);
 
     index++;
+    
+    ip_params_apply.connect(ap_data, index, 0);
+      
     index++;
 
     index = connect_counter.connect(ap_data, index);
@@ -609,6 +624,16 @@ struct control_data_t
     index = program_rev.connect(ap_data, index);
     index = mxsrclib_rev.connect(ap_data, index);
     index = common_rev.connect(ap_data, index);
+    index = lwip_rev.connect(ap_data, index);
+    
+    index = mask_0.connect(ap_data, index);
+    index = mask_1.connect(ap_data, index);
+    index = mask_2.connect(ap_data, index);
+    index = mask_3.connect(ap_data, index);
+    index = gateway_0.connect(ap_data, index);
+    index = gateway_1.connect(ap_data, index);
+    index = gateway_2.connect(ap_data, index);
+    index = gateway_3.connect(ap_data, index);
 
     return index;
   }
